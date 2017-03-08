@@ -1,15 +1,24 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+  name: slow
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-standard
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: datadir-kafka-0
   namespace: kafka
+  annotations:
+    volume.beta.kubernetes.io/storage-class: default
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 200Gi
+      storage: 10Gi
   selector:
     matchLabels:
       app: kafka
@@ -20,29 +29,15 @@ apiVersion: v1
 metadata:
   name: datadir-kafka-1
   namespace: kafka
+  annotations:
+    volume.beta.kubernetes.io/storage-class: default
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 200Gi
+      storage: 10Gi
   selector:
     matchLabels:
       app: kafka
       podindex: "1"
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: datadir-kafka-2
-  namespace: kafka
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 200Gi
-  selector:
-    matchLabels:
-      app: kafka
-      podindex: "2"
